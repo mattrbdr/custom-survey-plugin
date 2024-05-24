@@ -59,4 +59,13 @@ document.addEventListener('DOMContentLoaded', () => {
     if (filterAttributeSelect) {
         filterAttributeSelect.addEventListener('change', applyFilters);
     }
+
+    document.querySelectorAll('.participant-name').forEach(participantName => {
+        participantName.addEventListener('click', (e) => {
+            const website = participantName.getAttribute('data-website');
+            if (website) {
+                window.open(website, '_blank');
+            }
+        });
+    });
 });

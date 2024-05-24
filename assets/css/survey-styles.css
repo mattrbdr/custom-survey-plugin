@@ -27,7 +27,6 @@
 .response-card {
     border-top: 1px solid #ddd;
     padding: 10px;
-    position: relative;
 }
 
 .responses-list {
@@ -78,21 +77,11 @@
 }
 
 /* Cards */
-.participant-name {
+.response-card {
     position: relative;
-    cursor: pointer;
-    color: #0073aa;
-    text-decoration: underline;
 }
 
-.participant-name.no-website {
-    color: #000;
-    text-decoration: none;
-    font-weight: bold;
-    cursor: default;
-}
-
-.participant-name .hovercard {
+.response-card .hovercard {
     display: none;
     position: absolute;
     top: 100%;
@@ -104,6 +93,17 @@
     padding: 10px;
     z-index: 10;
     width: 250px;
+}
+
+.response-card:hover .hovercard {
+    display: block;
+}
+
+.participant-name {
+    position: relative;
+    cursor: pointer;
+    color: #0073aa;
+    text-decoration: underline;
 }
 
 .participant-name:hover .hovercard {

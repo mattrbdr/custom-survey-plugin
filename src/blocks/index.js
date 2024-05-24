@@ -67,13 +67,17 @@ registerBlockType('custom-survey-plugin/survey-block', {
             type: 'boolean',
             default: false
         },
+        reverseQuestions: {
+            type: 'boolean',
+            default: false
+        },
         layout: {
             type: 'string',
             default: 'list' // default layout is list
         }
     },
     edit: ({ attributes, setAttributes }) => {
-        const { surveyId, showResponses, showQuestions, showParticipants, filterQuestion, showFilterQuestion, filterParticipant, showFilterParticipant, filterAttribute, showFilterAttribute, layout } = attributes;
+        const { surveyId, showResponses, showQuestions, showParticipants, filterQuestion, showFilterQuestion, filterParticipant, showFilterParticipant, filterAttribute, showFilterAttribute, reverseQuestions, layout } = attributes;
 
         const { surveys, isLoading, questions, responses, participants, attributes: surveyAttributes } = useSelect((select) => {
             const query = {
@@ -87,6 +91,8 @@ registerBlockType('custom-survey-plugin/survey-block', {
                 ...query,
                 meta_key: '_survey_id',
                 meta_value: surveyId,
+                orderby: reverseQuestions ? 'date' : 'none',
+                order: reverseQuestions ? 'DESC' : 'ASC'
             }) : [];
             const responses = surveyId ? select('core').getEntityRecords('postType', 'response', {
                 ...query,
@@ -154,7 +160,7 @@ registerBlockType('custom-survey-plugin/survey-block', {
                                             onChange={ (value) => setAttributes({ showResponses: value }) }
                                         />
                                         <ToggleControl
-                                            label={ __('Show Participants', 'custom-survey-plugin') }
+                                            label={ __('Show Party', 'custom-survey-plugin') }
                                             checked={ showParticipants }
                                             onChange={ (value) => setAttributes({ showParticipants: value }) }
                                         />
@@ -164,14 +170,19 @@ registerBlockType('custom-survey-plugin/survey-block', {
                                             onChange={ (value) => setAttributes({ showFilterQuestion: value }) }
                                         />
                                         <ToggleControl
-                                            label={ __('Show Filter Participant', 'custom-survey-plugin') }
+                                            label={ __('Show Filter Party', 'custom-survey-plugin') }
                                             checked={ showFilterParticipant }
                                             onChange={ (value) => setAttributes({ showFilterParticipant: value }) }
                                         />
                                         <ToggleControl
-                                            label={ __('Show Filter Attribute', 'custom-survey-plugin') }
+                                            label={ __('Show Filter Country', 'custom-survey-plugin') }
                                             checked={ showFilterAttribute }
                                             onChange={ (value) => setAttributes({ showFilterAttribute: value }) }
+                                        />
+                                        <ToggleControl
+                                            label={ __('Reverse Questions Order', 'custom-survey-plugin') }
+                                            checked={ reverseQuestions }
+                                            onChange={ (value) => setAttributes({ reverseQuestions: value }) }
                                         />
                                         <TextControl
                                             label={ __('Filter Questions', 'custom-survey-plugin') }
@@ -229,7 +240,7 @@ registerBlockType('custom-survey-plugin/survey-block', {
                             ) }
                             { showFilterAttribute && (
                                 <div>
-                                    <h3>{ __('Filter Attributes:', 'custom-survey-plugin') }</h3>
+                                    <h3>{ __('Filter Country:', 'custom-survey-plugin') }</h3>
                                     <SelectControl
                                         value={ filterAttribute }
                                         options={ [ { label: __('Select a Country', 'custom-survey-plugin'), value: '' }, ...attributeOptions ] }
@@ -244,7 +255,7 @@ registerBlockType('custom-survey-plugin/survey-block', {
         );
     },
     save: ({ attributes }) => {
-        const { surveyId, showQuestions, showResponses, showParticipants, filterQuestion, showFilterQuestion, filterParticipant, showFilterParticipant, filterAttribute, showFilterAttribute, layout } = attributes;
+        const { surveyId, showQuestions, showResponses, showParticipants, filterQuestion, showFilterQuestion, filterParticipant, showFilterParticipant, filterAttribute, showFilterAttribute, reverseQuestions, layout } = attributes;
 
         return (
             <div { ...useBlockProps.save() }>
@@ -258,7 +269,9 @@ registerBlockType('custom-survey-plugin/survey-block', {
                      data-show-filter-participant={ showFilterParticipant }
                      data-filter-participant={ filterParticipant }
                      data-show-filter-attribute={ showFilterAttribute }
-                     data-filter-attribute={ filterAttribute }>
+                     data-filter-attribute={ filterAttribute }
+                     data-reverse-questions={ reverseQuestions }
+                >
                 </div>
             </div>
         );

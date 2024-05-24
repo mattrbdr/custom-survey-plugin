@@ -2,7 +2,7 @@
 /*
 Plugin Name: Custom Survey Plugin
 Description: A custom plugin for handling surveys.
-Version: Beta 3
+Version: Beta 4.1
 Author: Mattéo Ribardiere
 Author URI: https://bento.matteorbdr.com
 Plugin URI: https://github.com/mattrbdr/custom-survey-plugin
@@ -16,20 +16,6 @@ if (!defined('ABSPATH')) {
 // Handle special characters
 function csp_handle_special_characters($text) {
     return htmlspecialchars($text, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
-}
-
-// Include additional files
-include_once plugin_dir_path(__FILE__) . 'includes/participants.php';
-include_once plugin_dir_path(__FILE__) . 'includes/questions.php';
-include_once plugin_dir_path(__FILE__) . 'includes/responses.php';
-include_once plugin_dir_path(__FILE__) . 'includes/surveys.php';
-
-// Define the csp_surveys_page function
-function csp_surveys_page() {
-    echo '<div class="wrap">';
-    echo '<h1>' . __('Surveys', 'custom-survey-plugin') . '</h1>';
-    echo '<p>' . __('Welcome to the Surveys management page. Here you can manage all your surveys.', 'custom-survey-plugin') . '</p>';
-    echo '</div>';
 }
 
 // Create custom post types on plugin activation
@@ -161,7 +147,7 @@ function csp_register_post_types() {
         'public'             => true,
         'publicly_queryable' => true,
         'show_ui'            => true,
-        'show_in_menu'       => false,
+        'show_in_menu'       => false, // Change to false
         'query_var'          => true,
         'rewrite'            => array('slug' => 'survey'),
         'capability_type'    => 'post',
@@ -269,9 +255,6 @@ function csp_enqueue_frontend_assets() {
 }
 add_action('wp_enqueue_scripts', 'csp_enqueue_frontend_assets');
 
-
-
-
 // Register block editor scripts and styles
 function csp_register_block_assets() {
     wp_register_script(
@@ -341,6 +324,10 @@ function csp_register_block_assets() {
                 'type' => 'boolean',
                 'default' => false,
             ),
+            'reverseQuestions' => array(
+                'type' => 'boolean',
+                'default' => false,
+            ),
             'layout' => array(
                 'type' => 'string',
                 'default' => 'list',
@@ -354,8 +341,7 @@ function csp_register_block_assets() {
 }
 add_action('init', 'csp_register_block_assets');
 
-// ... (le reste de votre code)
-
+// Render callback for the survey block
 function csp_render_survey_block($attributes) {
     if (!isset($attributes['surveyId']) || empty($attributes['surveyId'])) {
         return '<p>Select a survey from the block settings.</p>';
@@ -371,6 +357,7 @@ function csp_render_survey_block($attributes) {
     $showFilterParticipant = isset($attributes['showFilterParticipant']) ? $attributes['showFilterParticipant'] : false;
     $filterAttribute = isset($attributes['filterAttribute']) ? sanitize_text_field($attributes['filterAttribute']) : '';
     $showFilterAttribute = isset($attributes['showFilterAttribute']) ? $attributes['showFilterAttribute'] : false;
+    $reverseQuestions = isset($attributes['reverseQuestions']) ? $attributes['reverseQuestions'] : false;
     $blockWidth = isset($attributes['blockWidth']) ? intval($attributes['blockWidth']) : 100;
     $layout = isset($attributes['layout']) ? sanitize_text_field($attributes['layout']) : 'list';
 
@@ -380,6 +367,8 @@ function csp_render_survey_block($attributes) {
         'meta_key' => '_survey_id',
         'meta_value' => $surveyId,
         'numberposts' => -1,
+        'orderby' => $reverseQuestions ? 'date' : 'none',
+        'order' => $reverseQuestions ? 'DESC' : 'ASC'
     ));
 
     // Fetch participants
@@ -404,6 +393,7 @@ function csp_render_survey_block($attributes) {
     ob_start();
     echo '<div class="questions-list layout-' . esc_attr($layout) . '" style="width: ' . esc_attr($blockWidth) . '%;">';
     
+    // Add filter dropdowns
     if ($showFilterQuestion) {
         echo '<div class="filter-container filter-question">';
         echo '<label for="filter-question">' . __('Filter Questions', 'custom-survey-plugin') . '</label>';
@@ -455,6 +445,7 @@ function csp_render_survey_block($attributes) {
         if ($showResponses || $showParticipants) {
             echo '<div class="responses-container" style="display: none;">';
 
+            // Fetch responses for the question
             $responses = get_posts(array(
                 'post_type' => 'response',
                 'meta_key' => '_question_id',
@@ -467,22 +458,21 @@ function csp_render_survey_block($attributes) {
                 foreach ($responses as $response) {
                     $participant_id = get_post_meta($response->ID, '_participant_id', true);
                     $participant_name = $participant_id ? get_the_title($participant_id) : 'Unknown Participant';
-                    $participant_website = $participant_id ? get_post_meta($participant_id, '_participant_website', true) : '';
-                    $no_website_class = empty($participant_website) ? 'no-website' : '';
+                    $participant_website = get_post_meta($participant_id, '_participant_website', true);
                     echo '<div class="response-card" data-participant-id="' . esc_attr($participant_id) . '" data-attribute-ids="' . implode(',', wp_get_post_terms($participant_id, 'attribute', array('fields' => 'ids'))) . '">';
                     if ($showParticipants) {
-                        echo '<strong class="participant-name ' . esc_attr($no_website_class) . '">' . esc_html($participant_name);
-                        if (!empty($participant_website)) {
-                            echo '<div class="hovercard"><a href="' . esc_url($participant_website) . '" target="_blank">' . __('Website', 'custom-survey-plugin') . '</a></div>';
+                        echo '<strong class="participant-name"';
+                        if ($participant_website) {
+                            echo ' data-website="' . esc_url($participant_website) . '" style="color: #0073aa; text-decoration: underline; cursor: pointer;">' . esc_html($participant_name) . '</strong>';
+                        } else {
+                            echo '>' . esc_html($participant_name) . '</strong>';
                         }
-                        echo '</strong>: ';
                     }
                     if ($showResponses) {
                         echo esc_html($response->post_title);
                     }
                     echo '</div>';
                 }
-                
                 echo '</div>';
             } else {
                 echo '<p>No responses found.</p>';
@@ -495,3 +485,18 @@ function csp_render_survey_block($attributes) {
     echo '</div>';
     return ob_get_clean();
 }
+
+// Include additional files
+include_once plugin_dir_path(__FILE__) . 'includes/participants.php';
+include_once plugin_dir_path(__FILE__) . 'includes/questions.php';
+include_once plugin_dir_path(__FILE__) . 'includes/responses.php';
+include_once plugin_dir_path(__FILE__) . 'includes/surveys.php';
+
+// Define the csp_surveys_page function
+function csp_surveys_page() {
+    echo '<div class="wrap">';
+    echo '<h1>' . __('Surveys', 'custom-survey-plugin') . '</h1>';
+    echo '<p>' . __('Welcome to the Surveys management page. Here you can manage all your surveys.', 'custom-survey-plugin') . '</p>';
+    echo '</div>';
+}
+?>

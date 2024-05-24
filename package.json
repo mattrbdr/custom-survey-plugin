@@ -1,6 +1,6 @@
 {
   "name": "custom-survey-plugin-block",
-  "version": "1.0.0",
+  "version": "B.4.1",
   "description": "A simple plugin for display custom data for a custom survey project",
   "main": "index.js",
   "scripts": {
