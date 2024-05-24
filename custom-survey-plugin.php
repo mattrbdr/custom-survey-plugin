@@ -2,8 +2,10 @@
 /*
 Plugin Name: Custom Survey Plugin
 Description: A custom plugin for handling surveys.
-Version: 1.0
-Author: Your Name
+Version: Beta 3
+Author: Mattéo Ribardiere
+Author URI: https://bento.matteorbdr.com
+Plugin URI: https://github.com/mattrbdr/custom-survey-plugin
 */
 
 // Exit if accessed directly.
