@@ -219,7 +219,7 @@ registerBlockType('custom-survey-plugin/survey-block', {
                             ) }
                             { showParticipants && participants && (
                                 <div>
-                                    <h3>{ __('Participants:', 'custom-survey-plugin') }</h3>
+                                    <h3>{ __('Party:', 'custom-survey-plugin') }</h3>
                                     <ul>
                                         { participants.map(participant => (
                                             <li key={ participant.id }>{ decodeHTML(participant.title.rendered) }</li>
@@ -232,7 +232,7 @@ registerBlockType('custom-survey-plugin/survey-block', {
                                     <h3>{ __('Filter Attributes:', 'custom-survey-plugin') }</h3>
                                     <SelectControl
                                         value={ filterAttribute }
-                                        options={ [ { label: __('Select an Attribute', 'custom-survey-plugin'), value: '' }, ...attributeOptions ] }
+                                        options={ [ { label: __('Select a Country', 'custom-survey-plugin'), value: '' }, ...attributeOptions ] }
                                         onChange={ (newFilterAttribute) => setAttributes({ filterAttribute: newFilterAttribute }) }
                                     />
                                 </div>

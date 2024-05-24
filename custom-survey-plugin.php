@@ -1,8 +1,8 @@
 <?php
 /*
 Plugin Name: Custom Survey Plugin
-Description: A custom plugin for handling surveys. Easily manage participants, questions, and responses with an intuitive interface and customizable display options. Supports Gutenberg block for seamless integration.
-Version: B.3.0.1
+Description: A custom plugin for handling surveys.
+Version: Beta 3
 Author: Mattéo Ribardiere
 Author URI: https://bento.matteorbdr.com
 Plugin URI: https://github.com/mattrbdr/custom-survey-plugin
@@ -402,9 +402,9 @@ function csp_render_survey_block($attributes) {
     // Ajout du menu déroulant pour les participants si l'attribut showFilterParticipant est vrai
     if ($showFilterParticipant) {
         echo '<div class="filter-container filter-participant">';
-        echo '<label for="filter-participant">' . __('Filter Participants', 'custom-survey-plugin') . '</label>';
+        echo '<label for="filter-participant">' . __('Filter Party', 'custom-survey-plugin') . '</label>';
         echo '<select id="filter-participant">';
-        echo '<option value="">' . __('Select a participant', 'custom-survey-plugin') . '</option>';
+        echo '<option value="">' . __('Select a party', 'custom-survey-plugin') . '</option>';
         foreach ($participants as $participant) {
             echo '<option value="' . esc_attr($participant->ID) . '">' . esc_html($participant->post_title) . '</option>';
         }
@@ -415,9 +415,9 @@ function csp_render_survey_block($attributes) {
     // Ajout du menu déroulant pour les attributs si l'attribut showFilterAttribute est vrai
     if ($showFilterAttribute) {
         echo '<div class="filter-container filter-attribute">';
-        echo '<label for="filter-attribute">' . __('Filter Attributes', 'custom-survey-plugin') . '</label>';
+        echo '<label for="filter-attribute">' . __('Filter Country', 'custom-survey-plugin') . '</label>';
         echo '<select id="filter-attribute">';
-        echo '<option value="">' . __('Select an attribute', 'custom-survey-plugin') . '</option>';
+        echo '<option value="">' . __('Select a country', 'custom-survey-plugin') . '</option>';
         foreach ($attributes as $attribute) {
             echo '<optgroup label="' . esc_html($attribute->name) . '">';
             $child_terms = get_terms(array(
