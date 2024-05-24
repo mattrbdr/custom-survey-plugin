@@ -1,0 +1,90 @@
+.survey-block-content {
+    width: 100%;
+}
+
+.questions-list {
+    width: 100%;
+}
+
+.question-card {
+    border: 1px solid #ddd;
+    margin-bottom: 10px;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.question-header {
+    background: #f7f7f7;
+    padding: 10px;
+    cursor: pointer;
+}
+
+.responses-container {
+    display: none;
+    padding: 10px;
+}
+
+.response-card {
+    border-top: 1px solid #ddd;
+    padding: 10px;
+}
+
+.responses-list {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+
+/* Optional: Add some hover effects to enhance UX */
+.question-header:hover {
+    background: #e0e0e0;
+}
+
+.question-card {
+    transition: background-color 0.3s ease;
+}
+
+.question-card:hover {
+    background-color: #f1f1f1;
+}
+
+/* Optional: Add some styles for better mobile responsiveness */
+@media (max-width: 600px) {
+    .survey-block-content,
+    .questions-list {
+        width: 100%;
+    }
+
+    .question-header,
+    .responses-container,
+    .response-card {
+        padding: 5px;
+    }
+}
+
+/* Styles for filters */
+.filter-container {
+    margin-bottom: 20px;
+    padding: 10px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.filter-container label {
+    font-weight: bold;
+    margin-right: 10px;
+}
+
+.filter-container select {
+    padding: 5px 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #fff;
+    transition: border-color 0.2s ease-in-out;
+}
+
+.filter-container select:focus {
+    border-color: #0073aa;
+    outline: none;
+}

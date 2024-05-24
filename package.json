@@ -1,0 +1,17 @@
+{
+  "name": "custom-survey-plugin-block",
+  "version": "1.0.0",
+  "description": "A simple plugin for display custom data for a custom survey project",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "wp-scripts build --webpack-config ./webpack.config.js",
+    "start": "wp-scripts start --webpack-config ./webpack.config.js"
+  },
+  "author": "Mattéo Ribardière",
+  "license": "ISC",
+  "devDependencies": {
+    "@wordpress/scripts": "^27.9.0",
+    "path-browserify": "^1.0.1"
+  }
+}
