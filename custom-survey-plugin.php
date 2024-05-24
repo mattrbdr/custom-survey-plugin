@@ -1,8 +1,8 @@
 <?php
 /*
 Plugin Name: Custom Survey Plugin
-Description: A custom plugin for handling surveys.
-Version: Beta 3
+Description: A custom plugin for handling surveys. Easily manage participants, questions, and responses with an intuitive interface and customizable display options. Supports Gutenberg block for seamless integration.
+Version: B.3.0.1
 Author: Mattéo Ribardiere
 Author URI: https://bento.matteorbdr.com
 Plugin URI: https://github.com/mattrbdr/custom-survey-plugin
