@@ -27,6 +27,7 @@
 .response-card {
     border-top: 1px solid #ddd;
     padding: 10px;
+    position: relative;
 }
 
 .responses-list {
@@ -48,20 +49,6 @@
     background-color: #f1f1f1;
 }
 
-/* Optional: Add some styles for better mobile responsiveness */
-@media (max-width: 600px) {
-    .survey-block-content,
-    .questions-list {
-        width: 100%;
-    }
-
-    .question-header,
-    .responses-container,
-    .response-card {
-        padding: 5px;
-    }
-}
-
 /* Styles for filters */
 .filter-container {
     margin-bottom: 20px;
@@ -77,6 +64,7 @@
 }
 
 .filter-container select {
+    width: 100%; /* Ensure the select box does not overflow */
     padding: 5px 10px;
     border: 1px solid #ccc;
     border-radius: 4px;
@@ -87,4 +75,55 @@
 .filter-container select:focus {
     border-color: #0073aa;
     outline: none;
+}
+
+/* Cards */
+.participant-name {
+    position: relative;
+    cursor: pointer;
+    color: #0073aa;
+    text-decoration: underline;
+}
+
+.participant-name.no-website {
+    color: #000;
+    text-decoration: none;
+    font-weight: bold;
+    cursor: default;
+}
+
+.participant-name .hovercard {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 10px;
+    z-index: 10;
+    width: 250px;
+}
+
+.participant-name:hover .hovercard {
+    display: block;
+}
+
+.hovercard a:hover {
+    text-decoration: underline;
+}
+
+/* Optional: Add some styles for better mobile responsiveness */
+@media (max-width: 600px) {
+    .survey-block-content,
+    .questions-list {
+        width: 100%;
+    }
+
+    .question-header,
+    .responses-container,
+    .response-card {
+        padding: 5px;
+    }
 }

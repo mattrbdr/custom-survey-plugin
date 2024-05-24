@@ -17,6 +17,7 @@ function csp_render_participant_meta_box($post) {
     wp_nonce_field('save_participant_details', 'participant_details_nonce');
 
     $custom_fields = get_post_meta($post->ID, '_custom_fields', true);
+    $website = get_post_meta($post->ID, '_participant_website', true); // Retrieve the website link
 
     echo '<div id="custom-fields">';
     if ($custom_fields) {
@@ -33,6 +34,11 @@ function csp_render_participant_meta_box($post) {
     echo '<button type="button" class="button" id="add-field">Add Field</button>';
     echo '<br><br>';
     echo '<button type="button" class="button" id="add-custom-field">Add Custom Field</button>';
+
+    // Add website field
+    echo '<br><br>';
+    echo '<label for="participant_website">' . __('Website', 'custom-survey-plugin') . '</label>';
+    echo '<input type="text" id="participant_website" name="participant_website" value="' . esc_attr($website) . '" size="25" />';
 }
 
 function csp_save_participant_meta_box_data($post_id) {
@@ -62,6 +68,11 @@ function csp_save_participant_meta_box_data($post_id) {
         update_post_meta($post_id, '_survey_id', intval($_POST['survey_id']));
     } else {
         delete_post_meta($post_id, '_survey_id');
+    }
+
+    // Save website field
+    if (isset($_POST['participant_website'])) {
+        update_post_meta($post_id, '_participant_website', esc_url($_POST['participant_website']));
     }
 }
 add_action('save_post', 'csp_save_participant_meta_box_data');
