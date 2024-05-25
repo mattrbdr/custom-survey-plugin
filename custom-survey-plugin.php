@@ -2,7 +2,7 @@
 /*
 Plugin Name: Custom Survey Plugin
 Description: A custom plugin for handling surveys.
-Version: Beta 4.1
+Version: Beta 3
 Author: Mattéo Ribardiere
 Author URI: https://bento.matteorbdr.com
 Plugin URI: https://github.com/mattrbdr/custom-survey-plugin
@@ -341,6 +341,14 @@ function csp_register_block_assets() {
 }
 add_action('init', 'csp_register_block_assets');
 
+// custom-survey-plugin.php
+
+// ... (le reste du code reste inchangé)
+
+// custom-survey-plugin.php
+
+// ... (le reste du code reste inchangé)
+
 // Render callback for the survey block
 function csp_render_survey_block($attributes) {
     if (!isset($attributes['surveyId']) || empty($attributes['surveyId'])) {
@@ -367,8 +375,8 @@ function csp_render_survey_block($attributes) {
         'meta_key' => '_survey_id',
         'meta_value' => $surveyId,
         'numberposts' => -1,
-        'orderby' => $reverseQuestions ? 'date' : 'none',
-        'order' => $reverseQuestions ? 'DESC' : 'ASC'
+        'orderby' => 'date',
+        'order' => $reverseQuestions ? 'DESC' : 'ASC',
     ));
 
     // Fetch participants
@@ -393,24 +401,26 @@ function csp_render_survey_block($attributes) {
     ob_start();
     echo '<div class="questions-list layout-' . esc_attr($layout) . '" style="width: ' . esc_attr($blockWidth) . '%;">';
     
-    // Add filter dropdowns
+    // Ajout des checkboxes pour les questions si l'attribut showFilterQuestion est vrai
     if ($showFilterQuestion) {
         echo '<div class="filter-container filter-question">';
-        echo '<label for="filter-question">' . __('Filter Questions', 'custom-survey-plugin') . '</label>';
-        echo '<select id="filter-question">';
-        echo '<option value="">' . __('Select a question', 'custom-survey-plugin') . '</option>';
+        echo '<label>' . __('Filter Questions', 'custom-survey-plugin') . '</label>';
         foreach ($questions as $question) {
-            echo '<option value="' . esc_attr($question->ID) . '">' . esc_html($question->post_title) . '</option>';
+            echo '<div class="checkbox">';
+            echo '<label>';
+            echo '<input type="checkbox" class="filter-question-checkbox" value="' . esc_attr($question->ID) . '"> ' . esc_html($question->post_title);
+            echo '</label>';
+            echo '</div>';
         }
-        echo '</select>';
         echo '</div>';
     }
     
+    // Ajout du menu déroulant pour les participants si l'attribut showFilterParticipant est vrai
     if ($showFilterParticipant) {
         echo '<div class="filter-container filter-participant">';
         echo '<label for="filter-participant">' . __('Filter Party', 'custom-survey-plugin') . '</label>';
         echo '<select id="filter-participant">';
-        echo '<option value="">' . __('Select a party', 'custom-survey-plugin') . '</option>';
+        echo '<option value="">' . __('Select a participant', 'custom-survey-plugin') . '</option>';
         foreach ($participants as $participant) {
             echo '<option value="' . esc_attr($participant->ID) . '">' . esc_html($participant->post_title) . '</option>';
         }
@@ -418,6 +428,7 @@ function csp_render_survey_block($attributes) {
         echo '</div>';
     }
 
+    // Ajout du menu déroulant pour les attributs si l'attribut showFilterAttribute est vrai
     if ($showFilterAttribute) {
         echo '<div class="filter-container filter-attribute">';
         echo '<label for="filter-attribute">' . __('Filter Country', 'custom-survey-plugin') . '</label>';
@@ -463,7 +474,7 @@ function csp_render_survey_block($attributes) {
                     if ($showParticipants) {
                         echo '<strong class="participant-name"';
                         if ($participant_website) {
-                            echo ' data-website="' . esc_url($participant_website) . '" style="color: #0073aa; text-decoration: underline; cursor: pointer;">' . esc_html($participant_name) . '</strong>';
+                            echo ' data-website="' . esc_url($participant_website) . '" style="color: #0073aa; text-decoration: underline; cursor: pointer;"><a href="' . esc_url($participant_website) . '" target="_blank">' . esc_html($participant_name) . '</a></strong>';
                         } else {
                             echo '>' . esc_html($participant_name) . '</strong>';
                         }

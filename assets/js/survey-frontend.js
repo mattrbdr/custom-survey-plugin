@@ -1,6 +1,8 @@
+// survey-frontend.js
+
 document.addEventListener('DOMContentLoaded', () => {
     const questionHeaders = document.querySelectorAll('.question-header');
-    const filterQuestionSelect = document.getElementById('filter-question');
+    const filterQuestionCheckboxes = document.querySelectorAll('.filter-question-checkbox');
     const filterParticipantSelect = document.getElementById('filter-participant');
     const filterAttributeSelect = document.getElementById('filter-attribute');
 
@@ -16,7 +18,9 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     const applyFilters = () => {
-        const filterQuestionValue = filterQuestionSelect ? filterQuestionSelect.value.toLowerCase() : '';
+        const filterQuestionValues = Array.from(filterQuestionCheckboxes)
+            .filter(checkbox => checkbox.checked)
+            .map(checkbox => checkbox.value.toLowerCase());
         const filterParticipantValue = filterParticipantSelect ? filterParticipantSelect.value.toLowerCase() : '';
         const filterAttributeValue = filterAttributeSelect ? filterAttributeSelect.value.toLowerCase() : '';
 
@@ -26,7 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const responseCards = questionCard.querySelectorAll('.response-card');
             let showCard = false;
 
-            if (filterQuestionValue && questionId !== filterQuestionValue) {
+            if (filterQuestionValues.length > 0 && !filterQuestionValues.includes(questionId)) {
                 questionCard.style.display = 'none';
                 return;
             }
@@ -48,8 +52,10 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
 
-    if (filterQuestionSelect) {
-        filterQuestionSelect.addEventListener('change', applyFilters);
+    if (filterQuestionCheckboxes) {
+        filterQuestionCheckboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', applyFilters);
+        });
     }
 
     if (filterParticipantSelect) {
@@ -59,13 +65,4 @@ document.addEventListener('DOMContentLoaded', () => {
     if (filterAttributeSelect) {
         filterAttributeSelect.addEventListener('change', applyFilters);
     }
-
-    document.querySelectorAll('.participant-name').forEach(participantName => {
-        participantName.addEventListener('click', (e) => {
-            const website = participantName.getAttribute('data-website');
-            if (website) {
-                window.open(website, '_blank');
-            }
-        });
-    });
 });
